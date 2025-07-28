@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Sidebar from './components/Sidebar';
+import MapComponent from './components/Map';
 
 function App() {
+  // The shared state for incidents
+  const [incidents, setIncidents] = useState([]);
+
+  // Function to add a new incident with a unique ID and timestamp
+  const addIncident = (incident) => {
+    // Add a unique id and timestamp if missing
+    const incidentWithMetadata = {
+      id: incident.id || Date.now(),
+      timestamp: incident.timestamp || new Date().toISOString(),
+      ...incident,
+    };
+    setIncidents((prev) => [...prev, incidentWithMetadata]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      className="App"
+      style={{
+        display: 'flex',
+        height: '100vh',
+        width: '100vw',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Sidebar to add incidents */}
+      <Sidebar onAddIncident={addIncident} />
+
+      {/* Map shows incidents and allows adding by map click */}
+      <MapComponent incidents={incidents} onAddIncident={addIncident} />
     </div>
   );
 }
